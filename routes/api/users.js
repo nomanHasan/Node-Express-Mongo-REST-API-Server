@@ -60,6 +60,12 @@ router.post('/create', function(req, res, next) {
       address: "",
       street: "",
       house: ""
+    },
+    teacherInfo: {
+      institution: "",
+      level: "",
+      sex: "",
+      age: 0,
     }
   }
   console.log(user);
@@ -89,20 +95,29 @@ router.post('/authenticate', function(req, res, next) {
     else {
       // The User is AITHENTICATED !
       var payload = {
+        _id: user._id,
+        username: user.username,
+        accountType: user.accountType
+      }
+
+      var returnUser = {
+        _id: user._id,
         username: user.username,
         accountType: user.accountType,
         location: user.location,
         email: user.email,
         contactNo: user.contactNo,
-        name: user.name
+        name: user.name,
+        teacherInfo: user.teacherInfo
       }
+
       var token = jwt.sign(payload, 'demoSecret', {
           expiresIn: 1440*60*7 // expires in 24 hours X 7
         });
       res.json({
         success:true,
         message:"Authentication Successfull. ",
-        payload: payload,
+        user: returnUser,
         token: token
       });
     }

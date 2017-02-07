@@ -4,6 +4,7 @@ var Job = require('../../models/job');
 var jobService = require('../../services/job-service');
 var userService = require('../../services/user-service');
 var config = require('../../config');
+var async = require('async');
 
 
 router.get('/', function (req, res, next) {
@@ -77,15 +78,13 @@ router.get('/private/:offset', function (req, res, next) {
 router.get('/private-detail/:id', function (req, res, next) {
     var id = req.params.id;
     console.log(id);
-    userService.getUserId(req.decoded.username, function (err, user) {
-        jobService.getJobById(id, user._id, function (err, job) {
-            if (err) {
-                console.log('An Error occured during getting jobList');
-                res.json({ success: false, message: "An Error occured during getting jobList" });
-            }
-            console.log(job);
-            res.json({ success: true, job: job });
-        });
+    jobService.getJobById(id, req.decoded._id, function (err, job) {
+        if (err) {
+            console.log('An Error occured during getting jobList');
+            res.json({ success: false, message: "An Error occured during getting jobList" });
+        }
+        console.log(job);
+        res.json({ success: true, job: job });
     });
 });
 
@@ -115,6 +114,96 @@ router.get('/public/:offset', function (req, res, next) {
     });
 });
 
+router.get('/applied/:offset', function (req, res, next) {
+    var offset = req.params.offset;
+    userService.getAppliedJobsList(req.decoded.username, function(err, user){
+        if(err){
+            console.log(err);
+            return res.json({ success:false, err:err });
+        }
+        var jobs=[];
+        console.log(user);
+        callback = function(){
+            console.log("Callback Function Called");
+        }
+        console.log("USER APPL");
+        console.log(user[0].applied);
+        // async.eachOf(user[0].applied, function(application, key, callback){
+        //     // console.log("Application Salary");
+        //     // console.log(application.salary);
+            // jobService.getPublicJobById({_id: application.jobId}, function(err, job){
+            //     job.sal= application.salary;
+            //     console.log("JOB ");
+            //     console.log(job);
+            //     jobs.push(job);
+            //     if(key >= user[0].applied.length-1){
+            //         callback();
+            //     }
+            // });
+        // }, function(err){
+        //     if(err){
+        //         console.log(err);
+        //         return res.json({ success:false, err:err });
+        //     }
+        //     console.log("Success");
+        //     return res.json({ success:true, jobs:jobs });
+        // });
+
+        var applied = user[0].applied;
+        var count =applied.length;
+
+        user[0].applied.forEach(function(application, index){
+            jobService.getPublicJobById({_id: application.jobId}, function(err, job){
+                job = job.toObject();               //Because Mongoose objects are immutable
+                job.sal= Number(application.salary);
+                console.log("JOB ");
+                console.log(application.salary);
+                jobs.push(job);
+                console.log(job.sal);
+                console.log(jobs);
+                setTimeout(function(){
+                    count --;
+                    if(count ==0){
+                        console.log("Timeout Function Called");
+                        return res.json({ success:true, jobs:jobs });
+                    }
+                })
+            });
+        })
+
+        //Mongoose Query Populate Solution
+        // console.log(user);
+        // return res.json({ success:false, jobs:user.applied });
+
+    });
+});
+
+router.get('/applied-detail/:id', function (req, res, next) {
+    var jobId = req.params.id;
+    console.log(jobId);
+    console.log(req.decoded._id);
+    var userId = req.decoded._id;
+    jobService.getAppliedJobById(userId, jobId, function(err, job){
+        //If job is null
+        if(job==null){
+            return res.json({ success:false });
+        }
+        //Converting Mongoose object to mutable object
+        job = job.toObject();
+        if(err){
+            console.log(err);
+            return res.json({ success:false });
+        }
+        job.applicants.forEach(function(applicant){
+            if(applicant.applicant == userId){
+                job.sal = applicant.salary;
+                job.applicants = null;
+                return res.json({ success:true, job:job });
+            }
+        })
+    })
+});
+
 router.post('/apply-tuition', function(req, res, next){
     console.log(req.body);
     console.log(req.body.offer);
@@ -124,7 +213,7 @@ router.post('/apply-tuition', function(req, res, next){
             console.log(err);
             return res.json({ success:false, err:err });
         }
-        jobService.applyJob(req.body.jobid, user._id, req.body.offer, function(err){
+        jobService.applyJob(req.body.jobId, user._id, req.body.offer, function(err){
             if(err){
                 return res.json({ success:false, err:err });
             }
@@ -132,5 +221,35 @@ router.post('/apply-tuition', function(req, res, next){
         });
     });
 });
+
+router.get('/cancel-application/:id', function(req, res, next){
+    var jobId = req.params.id;
+    // console.log("Cancel Application");
+    // console.log(jobId);
+    jobService.cancelApplication(req.decoded._id, jobId, function(err){
+        if(err){
+            console.log(err);
+            return res.json({ success:false, message: "Application Could not be canceled. " });
+        }
+        return res.json({ success:true, message:"Application Canceled. " });
+    })
+})
+
+router.post('/select-tuition', function(req, res, next){
+    var applicants = req.body.applicants;
+    var tuition = req.body.tuition;
+
+    applicants = JSON.parse(applicants);
+
+
+    jobService.selectApplication(req.decoded._id, tuition, applicants, function(err){
+        if(err){
+            console.log(err);
+            return res.json({ success:false });
+        }
+        return res.json({ success:true, message:"Application Slection complete. "});
+    });
+
+})
 
 module.exports = router;

@@ -10,7 +10,7 @@ exports.addUser = function(user, next){
         accountType: user.accountType,
         location: user.location
     });
-
+    
     newUser.save(function(err){
         if(err){
             console.log(err);
@@ -38,6 +38,24 @@ exports.findUserByEmail = function(email, next){
         next(err, user);
     })
 };
+
+exports.findUserByUsername = function(username, next){
+    User.find({username: username }, function(err, user){
+        next(err, user);
+    })
+}
+
+exports.getAppliedJobsList = function(username, next){
+    User.find({username: username }, 'applied', function(err, user){
+        next(err, user);
+    })
+}
+
+exports.getAppliedJobsList_Populate = function(username, next){
+    User.find({username: username }).populate('applied.job').exec(function(err, user){
+        next(err, user);
+    });
+}
 
 exports.findUser = function(username, next){
     // console.log("Username: "+ username);

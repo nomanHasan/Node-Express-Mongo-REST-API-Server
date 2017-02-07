@@ -44,6 +44,25 @@ router.post('/address', function(req, res, next){
     });
 });
 
+router.post('/teacherinfo', function(req, res, next){
+
+    var teacherInfo = {
+        institution: req.body.institution,
+        level: req.body.level,
+        sex: req.body.sex,
+        age: req.body.age
+    }
+
+    User.update({username: req.decoded.username }, {teacherInfo: teacherInfo}, function(err, raw){
+        if(err){
+            console.log(err);
+            return res.json({ success:false, err:err });
+        }
+        console.log(raw);
+        return res.json({ success:true, teacherInfo:teacherInfo });
+    });
+});
+
 
 
 // "$set":{

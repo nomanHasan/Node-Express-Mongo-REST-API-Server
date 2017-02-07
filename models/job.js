@@ -26,12 +26,18 @@ var jobSchema = new Schema({
     zone: { type: String, required: "Zone Name is required for Thana Creation " },
     applicants: [{
         salary: { type: Number },
-        applicant: { type: Schema.Types.ObjectId },
+        applicant: { type: Schema.Types.ObjectId , ref:'User'},
+        _id: false,
+    }],
+    selected: [{
+        salary: { type: Number },
+        applicant: { type: Schema.Types.ObjectId , ref:'User'},
+        _id: false,
     }],
 });
 
 infoSchema.pre('validate', function (next) {
-    console.log('Validation of Data ');
+    console.log('Validation of Data');
     var mList = info.getMediums();
     var Llist = info.getLevels(this.medium);
     if (mList.indexOf(this.medium) == -1) {

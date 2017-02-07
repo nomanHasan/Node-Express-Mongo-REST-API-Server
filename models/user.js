@@ -12,6 +12,13 @@ var areaSchema = new Schema({
     house: { type: String },
 });
 
+var teacherInfoSchema= new Schema({
+    institution: {type: String },
+    level: {type: String },
+    sex: {type: String, enum:['Male', 'Female']},
+    age: {type: Number, min: 10, max: 60 }
+});
+
 var userSchema = new Schema({
     username: { type: String, unique: true, required: 'Username is required for any User'},
     name: {type: String, required: 'Name is Required for User'},
@@ -19,7 +26,13 @@ var userSchema = new Schema({
     accountType: {type: String, required: 'Account is Required for User'},
     contactNo: {type: String, require:"Your phone number is required " },
     email: {type: String },
-    location: areaSchema
+    teacherInfo: teacherInfoSchema,
+    location: areaSchema,
+    applied: [{
+        salary: { type: Number },
+        jobId: { type: Schema.Types.ObjectId },
+        _id: false
+    }]
 });
 
 userSchema.statics.findUserByName = function(name, cb){
