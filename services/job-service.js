@@ -1,6 +1,16 @@
 var Job = require('../models/job');
 var User = require('../models/user');
 
+Array.prototype.clean = function(deleteValue) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == deleteValue) {         
+      this.splice(i, 1);
+      i--;
+    }
+  }
+  return this;
+};
+
 exports.createJob = function(job, next){
     job.save(function(err){
         if(err){
@@ -12,11 +22,104 @@ exports.createJob = function(job, next){
     });
 }
 
-exports.getJobs = function(next){
-    Job.find({}, function(err, jobs){
-        next(err, jobs);
+exports.getJobs = function(ofs, next){
+
+    Job.find({})
+    .skip(ofs)
+    .limit(10)
+    .populate('creator', 'username')
+    .exec(function(err, result){  
+        next(err, result);
+    });
+}
+
+exports.adminUpdateTuition = function(id, newJob, next){
+    Job.findById(id, function(err, job){
+        if(err){
+            console.log(err);
+            return next(err, null);
+        }
+
+        newJob.subjects.clean("");
+        newJob.days.clean("");
+
+        job.institution = newJob.institution;
+        job.subjects = newJob.subjects;
+        job.days = newJob.days;
+        job.info.medium = newJob.medium;
+        job.info.level = newJob.level;
+        job.thana = newJob.thana;
+        job.zone = newJob.zone;
+
+        job.save(function(err, newJob){
+            if(err){
+                console.log(err);
+                return next(err, null);
+            }
+            return next(null, newJob);
+        })
     })
 }
+
+exports.getJobsPaginate = function(page, next){
+
+    Job.paginate({}, {select: 'institution info.medium info.level zone creator', populate:{path:'creator', select:'username'}, page:page, limit:10}, function(err, results){
+        if(err){
+            console.log(err);
+            return next(err, null);
+        }
+        console.log(results.docs[0].creator);
+        next(null, results);
+    });
+}
+
+
+exports.getPrivateJobs = function(query, next){
+
+    Job.find(query, 'institution info.medium info.level days subjects', function(err, results){
+        if(err){
+            console.log(err);
+            return next(err, null);
+        }
+        console.log(results);
+        next(null, results);
+    });
+}
+
+
+
+exports.getSelectedJobsPaginate = function(page, next){
+    Job.paginate({selected: {$exists: true }}, {select: 'institution info.medium info.level zone creator', populate:{path:'creator', select:'username'}, page:page, limit:10}, function(err, results){
+        if(err){
+            console.log(err);
+            return next(err, null);
+        }
+        console.log(results);
+        next(null, results);
+    })
+}
+
+exports.getAppliedJobsPaginate = function(page, next){
+    Job.paginate({applicants: {$exists: true }}, {select: 'institution info.medium info.level zone creator', populate:{path:'creator', select:'username'}, page:page, limit:10}, function(err, results){
+        if(err){
+            console.log(err);
+            return next(err, null);
+        }
+        console.log(results);
+        next(null, results);
+    })
+}
+exports.getActivatedJobsPaginate = function(page, next){
+    Job.paginate({activated: {$exists: true }}, {select: 'institution info.medium info.level zone creator', populate:{path:'creator', select:'username'}, page:page, limit:10}, function(err, results){
+        if(err){
+            console.log(err);
+            return next(err, null);
+        }
+        console.log(results);
+        next(null, results);
+    })
+}
+
 
 exports.jobCount = function(userid, next){
     Job.count({creator:userid}, function(err, count){
@@ -43,6 +146,16 @@ exports.getJobById = function(id, creator, next){
     // })
 }
 
+exports.getJobDetailsById = function(id, next){
+    Job.findOne({ _id: id }).
+    populate('creator', 'username').
+    populate('applicants.applicant', 'username teacherInfo').
+    populate("selected.applicant", 'username teacherInfo').
+    exec(function(err, result){
+        next(err, result);
+    })
+}
+
 exports.getPublicJobById = function(query, next){
     Job.findOne(query,'_id institution info.level info.medium subjects days thana zone', function(err, result){
         next(err, result);
@@ -55,13 +168,6 @@ exports.getAppliedJobById = function(userId, jobId, next){
     });
 }
 
-exports.getJobsPaginate = function(query, ofs, next){
-    console.log(ofs);
-    
-    Job.paginate(query, {offset: ofs, limit: 5}, function(err, result){        
-        next(err, result);
-    });
-}
 
 exports.getPublicJobsPaginate = function(query, ofs, next){
     console.log(ofs);
@@ -70,8 +176,6 @@ exports.getPublicJobsPaginate = function(query, ofs, next){
         next(err, jobs);
     });
 }
-
-
 exports.applyJob = function(jobId, userId, sal, next){
     console.log(userId, sal);
     var application = {
@@ -185,7 +289,6 @@ exports.selectApplication = function(userId, jobId, applicants, next){
             //     });
             // }); 
         });
-
         // Job.update({_id: jobId}, )
     });
 }
@@ -195,5 +298,5 @@ exports.getPrivateJobsPaginate = function(query, ofs, next){
     
     Job.paginate(query, {offset: ofs, limit: 5}, function(err, result){        
         next(err, result);
-    })
+    });
 }

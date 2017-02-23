@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/templates/sb_head %>
+    <% include partials/templates/datatable %>
+    
+</head>
+
+<body>
+  <% include partials/templates/teacher/sb_nav%>
+
+  <div id="page-wrapper"> 
+    <% include partials/content/tuitionlist %>
+    <ul class="pagination justify-content-center">
+    <% for(var i=1; i<= pageCount; i++){ %>
+      <li>
+        <a href="/admin/tuitions/<%=i%>"><%=i%></a>
+      </li>
+      <%}%>
+  </ul>
+  </div>
+
+
+    <% include partials/templates/sb_jsdefaults %>
+</body>
+
+</html>

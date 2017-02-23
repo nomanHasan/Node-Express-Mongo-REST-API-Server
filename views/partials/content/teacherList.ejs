@@ -1,0 +1,34 @@
+<% if( typeof(teachers) !='undefined' &&teachers !=null ) { %>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <table width="100%" class="table" id="dataTables-example">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>ContactNo</th>
+                        <th>Email</th>     
+                        <th>Institution</th>                   
+                    </tr>
+                </thead>
+                <tbody>
+                <% for(var i =0; i<teachers.length; i++ ) { %>
+                        <tr class="odd gradeX">
+                            <td><div class="panel-body"><%=teachers[i].username %></div></td>
+                            <td><div class="panel-body"><%=teachers[i].name %></div></td>
+                            <td><div class="panel-body"><%=teachers[i].contactNo %></div></td>
+                            <td><div class="panel-body"><%=teachers[i].email %></div></td>
+                            <td><div class="panel-body"><%=teachers[i].teacherInfo.institution %></div></td>
+                            <td>
+                            <a href="/admin/teachers/details/<%=teachers[i]._id%>" class="btn btn-primary">Ddetails</a>
+                            <a href="/admin/teachers/edit/<%=teachers[i]._id%>" class="btn btn-primary">Edit</a>
+                            </td>
+                        </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<% } %>
+

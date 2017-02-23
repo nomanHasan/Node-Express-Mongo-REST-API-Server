@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/templates/sb_head %>
+    <% include partials/templates/datatable %>
+    
+</head>
+
+<body>
+  <% include partials/templates/teacher/sb_nav%>
+
+  <div id="page-wrapper"> 
+    <%if(user){ %>
+      <div class="col-sm-6">
+        <table class="table">
+        <tbody>
+          <tr><td><b>Name</b></td><td><%=user.name%></td></tr>
+          <tr><td><b>Username</b></td><td><%=user.username%></td></tr>
+          <tr><td><b>Account Type</b></td><td><%=user.accountType%></td></tr>
+          <tr><td><b>Contact No</b></td><td><%=user.contactNo%></td></tr>
+          <tr><td><b>Email</b></td><td><%=user.email%></td></tr>          
+        </tbody>
+      </table>
+      </div>
+      <%if(user.teacherInfo) { %>
+      <h3>Teacher Information</h3>
+      <div class="col-sm-6">
+        <table class="table">
+          <tbody>
+            <tr><td><b>Institution</b></td><td><%=user.teacherInfo.institution%></td></tr>
+            <tr><td><b>Level</b></td><td><%=user.teacherInfo.level%></td></tr>
+            <tr><td><b>Sex</b></td><td><%=user.teacherInfo.sex%></td></tr>
+            <tr><td><b>Age</b></td><td><%=user.teacherInfo.age%></td></tr>
+          </tbody>
+        </table>
+      </div> 
+      <% } %>
+
+      
+      <%if(user.location && user.location.zone && user.location.zone.length > 0) { %>
+            <h3>Location Information</h3>
+            <div class="col-sm-6">
+              <table class="table">
+              <tobdy>
+                <tr><td><b>District</b></td><td><%=user.location.district%></td></tr>
+                <tr><td><b>City</b></td><td><%=user.location.city%></td></tr>
+                <tr><td><b>Thana</b></td><td><%=user.location.thana%></td></tr>
+                <tr><td><b>Zone</b></td><td><%=user.location.zone%></td></tr>
+                <tr><td><b>Address</b></td><td><%=user.location.address%></td></tr>
+                <tr><td><b>Street</b></td><td><%=user.location.street%></td></tr>
+                <tr><td><b>House</b></td><td><%=user.location.house%></td></tr>
+              </tobdy>
+            </table>
+            </div>
+      <%}%>
+      
+      <% if(user.applied && user.applied.length > 0) { %>
+        <div class="col-sm-10">
+          <h3>Applied Jobs</h3>
+          <%for(var i =0; i < user.applied.length; i ++) { %>
+            <div class="panel">
+              <div class="panel-body">
+                <p><b>Institution: </b> <%=user.applied[i].jobId.institution%> <b>Thana: </b> <%=user.applied[i].jobId.thana%> <b>Medium: </b> <%=user.applied[i].jobId.info.medium%> <b>Level: </b> <%=user.applied[i].jobId.info.level%></p>
+                    <p><b>Salary: </b> <%=user.applied[i].salary%></p>
+                    <a href="/admin/tuitions/details/<%=user.applied[i].jobId._id%>" class="btn btn-success">Job Details</a>
+              </div>
+            </div>
+          <%}%>
+        </div>
+      <%}%>
+      
+  <%if(user.accountType=='Teacher'){ %>
+    <a href="/admin/teachers/edit/<%=user._id%>" class="btn btn-danger">Edit Information</a>
+  <%} else if(user.accountType=='Student'){%>
+    <a href="/admin/students/edit/<%=user._id%>" class="btn btn-danger">Edit Information</a>
+  <%}%>
+
+    <%}%>
+  </div>
+
+
+  
+
+    <% include partials/templates/sb_jsdefaults %>
+</body>
+
+</html>

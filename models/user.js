@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var userService = require('../services/user-service');
+var mongoosePaginate = require('mongoose-paginate');
 
 var areaSchema = new Schema({
     district: { type: String },
@@ -30,7 +31,7 @@ var userSchema = new Schema({
     location: areaSchema,
     applied: [{
         salary: { type: Number },
-        jobId: { type: Schema.Types.ObjectId },
+        jobId: { type: Schema.Types.ObjectId, ref:'Job' },
         _id: false
     }]
 });
@@ -59,6 +60,8 @@ userSchema.path('username').validate(function(value, next){
     });
 }, 'Username already in Use');
 
+
+userSchema.plugin(mongoosePaginate);
 var User = mongoose.model('User', userSchema);
 
 module.exports = User ;

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/templates/sb_head %>
+    <% include partials/templates/datatable %>
+    
+</head>
+
+<body>
+  <% include partials/templates/teacher/sb_nav%>
+
+  <div id="page-wrapper"> 
+    <%if(user){ %>
+    <form method="POST" class="form col-sm-6">
+      <table class="table">
+        <tbody>
+          <tr><td><b>Name</b></td><td><input type="text" id="name" name="name" value="<%=user.name%>" class="form-control"></td></tr>
+          <tr><td><b>Username</b></td><td><input type="text" id="username" name="username" value="<%=user.username%>" class="form-control"></td></tr>
+          <tr><td><b>Account Type</b></td><td><input type="text" id="accountType" name="accountType" value="<%=user.accountType%>" class="form-control"></td></tr>
+          <tr><td><b>Contact No</b></td><td><input type="text" id="contactNo" name="contactNo" value="<%=user.contactNo%>" class="form-control"></td></tr>
+          <tr><td><b>Email</b></td><td><input type="text" id="email" name="email" value="<%=user.email%>" class="form-control"></td></tr>          
+        </tbody>
+      </table>
+      <%if(user.teacherInfo) { %>
+      <h3>Teacher Information</h3>
+            <table class="table">
+              <tbody>
+                <tr><td><b>Institution</b></td><td><input type="text" id="institution" name="institution" value="<%=user.teacherInfo.institution%>" class="form-control"></td></tr>
+                <tr><td><b>Level</b></td><td><input type="text" id="level" name="level" value="<%=user.teacherInfo.level%>" class="form-control"></td></tr>
+                <tr><td><b>Sex</b></td><td><input type="text" id="sex" name="sex" value="<%=user.teacherInfo.sex%>" class="form-control"></td></tr>
+               <tr><td><b>Age</b></td><td><input type="text" id="age" name="age" value="<%=user.teacherInfo.age%>" class="form-control"></td></tr>
+              </tbody>
+            </table>
+      <% } %>
+
+      
+      <%if(user.location && user.location.zone && user.location.zone.length > 0) { %>
+            <h3>Location Information</h3>
+            <table class="table">
+              <tobdy>
+                <tr><td><b>District</b></td><td><input type="text" id="district" name="district" value="<%=user.location.district%>" class="form-control"></td></tr>
+                <tr><td><b>City</b></td><td><input type="text" id="city" name="city" value="<%=user.location.city%>" class="form-control"></td></tr>
+                <tr><td><b>Thana</b></td><td><input type="text" id="thana" name="thana" value="<%=user.location.thana%>" class="form-control"></td></tr>
+                <tr><td><b>Zone</b></td><td><input type="text" id="zone" name="zone" value="<%=user.location.zone%>" class="form-control"></td></tr>
+                <tr><td><b>Address</b></td><td><input type="text" id="address" name="address" value="<%=user.location.address%>" class="form-control"></td></tr>
+                <tr><td><b>Street</b></td><td><input type="text" id="street" name="street" value="<%=user.location.street%>" class="form-control"></td></tr>
+                <tr><td><b>House</b></td><td><input type="text" id="house" name="house" value="<%=user.location.house%>" class="form-control"></td></tr>
+              </tobdy>
+            </table>
+      <%}%>
+
+      <input type="submit" value="Update Information" class="btn btn-danger">
+
+      </form>
+      
+      <% if(user.applied && user.applied.length > 0) { %>
+        <h3>Applied Jobs</h3>
+          <%for(var i =0; i < user.applied.length; i ++) { %>
+            <div class="panel">
+              <div class="panel-body">
+                <p><b>Institution: </b> <%=user.applied[i].jobId.institution%> <b>Thana: </b> <%=user.applied[i].jobId.thana%> <b>Medium: </b> <%=user.applied[i].jobId.info.medium%> <b>Level: </b> <%=user.applied[i].jobId.info.level%></p>
+                    <p><b>Salary: </b> <%=user.applied[i].salary%></p>
+                    <a href="/admin/tuitions/details/<%=user.applied[i].jobId._id%>" class="btn btn-success">Job Details</a>
+              </div>
+            </div>
+          <%}%>
+      <%}%>
+    <%}%>
+  </div>
+
+  
+
+    <% include partials/templates/sb_jsdefaults %>
+</body>
+
+</html>

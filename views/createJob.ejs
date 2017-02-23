@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/templates/sb_head %>
+        <% include partials/templates/semantic %>
+
+</head>
+
+<body>
+    <% include partials/templates/student/sb_nav%>
+
+        <div id="page-wrapper">
+            <h1>CREATE</h1>
+            <div class="ui selection dropdown">
+                <input type="hidden" name="gender">
+                <i class="dropdown icon"></i>
+                <div class="default text">Gender</div>
+                <div class="menu">
+                    <div class="item" data-value="male" data-text="Male">
+                        <i class="male icon"></i> Male
+                    </div>
+                    <div class="item" data-value="female" data-text="Female">
+                        <i class="female icon"></i> Female
+                    </div>
+                </div>
+            </div>
+            <select name="gender" class="ui search dropdown" id="search-select">
+              <option value="">Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+        </div>
+        <% include partials/templates/sb_jsdefaults %>
+            <% include partials/templates/semantic-js %>
+                <script type="text/javascript">
+                    $('.ui.dropdown')
+                        .dropdown();
+                    $('#search-select')
+                        .dropdown();
+                </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% include partials/templates/head %>
+</head>
+
+<body>
+<% include partials/templates/nav %>
+  <% include partials/templates/navbar %>
+  <% include partials/templates/header %>
+    <form class="form-horizontal" method='POST'>
+        <div class="form-group">
+            <label class="control-label col-sm-4" for="username">Username:</label>
+            <div class="col-sm-4">
+                <input type="username" class="form-control" id="username" name="username" required placeholder="Enter Username ">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-4" for="pwd">Password:</label>
+            <div class="col-sm-4">
+                <input type="password" class="form-control" id="pwd" name="password" required  placeholder="Enter password">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-4">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="rememberMe" name="rememberMe"> Remember me</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-10">
+                <button type="submit" class="btn btn-default">Login to My Account</button>
+            </div>
+        </div>
+        <% if(typeof(error)!='undefined' && error !=null && error.length >0) { %>
+            <div class="col-sm-offset-4 col-sm-4">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only"></span> <%=error%>
+                </div>
+            </div>
+        <% } %>
+    </form>
+
+
+    <% include partials/templates/footer %>
+    <% include partials/templates/jsdefaults %>
+</body>
+
+</html>

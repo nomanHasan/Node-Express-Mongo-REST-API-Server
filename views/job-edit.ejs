@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/templates/sb_head %>
+    <% include partials/templates/datatable %>
+    
+</head>
+
+<body>
+  <% include partials/templates/teacher/sb_nav%>
+
+  <div id="page-wrapper">
+    <%if(job){ %>
+    <form method="POST" class="form col-sm-6">
+      
+      <table class="table">
+        <tbody>
+          <tr><td>Creator</td><td><%=job.creator.username%> <a href="/admin/students/details/<%=job.creator._id%>" class="btn btn-info">View Profile</a></td></tr>
+          <tr><td>Institution</td><td><input type="text" id="Institution" name="institution" value="<%=job.institution%>" class="form-control"></td></tr>
+          <tr><td>Medium</td><td><input type="text" value="<%=job.info.medium%>" id="medium" name="medium" class="form-control"></td></tr>
+          <tr><td>Level</td><td><input type="text" value="<%=job.info.level%>" id="level" name="level" class="form-control"></td></tr>
+          <tr><td>Thana</td><td><input type="text" value="<%=job.thana%>" id="thana" name="thana" class="form-control"></td></tr>
+          <tr><td>Zone</td><td><input type="text" value="<%=job.zone%>" id="zone" name="zone" class="form-control"></td></tr>
+          <tr><td>Subjects</td>
+          <td id="subsList">
+            <%for(var i = 0; i < job.subjects.length; i++ ){ %>
+              <span> <input type="text" value="<%=job.subjects[i]%>" id="subjects" name="subjects" class="form-control">. </span>
+            <%}%>
+            <button type="button" class="btn btn-success" id="addSub" > + Add Subject</button>
+          </td>
+          </tr>
+          <tr>
+            <td>Days</td>
+            <td id="daysList">
+              <%for(var i = 0; i<job.days.length; i++ ){ %>
+                <span><input type="text" value="<%=job.days[i]%>" id="days" name="days" class="form-control">. </span>
+              <%}%>
+              <button type="button" class="btn btn-success" id="addDay"> + Add Days</button>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button type="submit" class="btn btn-danger">Update Tuition</button> <a href="/admin/tuitions/" class="btn btn-success">Cancel</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Applicants</h3>
+        <%for(var i =0; i< job.applicants.length; i++ ) { %>
+            <div class="panel">
+              <div class="panel-body">
+              <span><b>Username</b> <%=job.applicants[i].applicant.username%></span>
+              <span><b>Salary</b> <%=job.applicants[i].salary%></span>
+              <a href="/admin/teachers/details/<%=job.applicants[i].applicant._id%>" class="btn btn-info">View Profile</a>
+            </div>
+            </div>
+        <%}%>
+        <%if(job.selected && job.selected.length> 0){ %>
+          <h3>Selected</h3>
+          <%for(var i =0; i< job.selected.length; i++ ) { %>
+              <div class="panel">
+                <div class="panel-body">
+                <span><b>Username</b> <%=job.selected[i].applicant.username%></span>
+                <span><b>Salary</b> <%=job.selected[i].salary%></span>
+                <a href="/admin/teachers/details/<%=job.selected[i].applicant._id%>" class="btn btn-info">View Profile</a>
+              </div>
+              </div>
+          <%}%>
+        <%}%>
+        
+    </form>
+
+    
+    <script>
+    $("#addDay").click(function(){
+        console.log("CLICKED");
+        var inp = "<span><input type=\"text\" value=\"\" id=\"days\" name=\"days\" class=\"form-control\">. </span>";
+        $("#daysList").append(inp);
+    });
+    $("#addSub").click(function(){
+        console.log("Subject CLICKED");
+        var inp = "<span><input type=\"text\" value=\"\" id=\"subjects\" name=\"subjects\" class=\"form-control\">. </span>";
+        $("#subsList").append(inp);
+    });
+    </script>
+
+
+    <%}%>
+  </div>
+    <% include partials/templates/sb_jsdefaults %>
+    
+</body>
+
+</html>

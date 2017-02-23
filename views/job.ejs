@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/templates/sb_head %>
+    <% include partials/templates/datatable %>
+    
+</head>
+
+<body>
+  <% include partials/templates/teacher/sb_nav%>
+
+  <div id="page-wrapper"> 
+    <%if(job){ %>
+    <a href="/admin/tuitions/edit/<%=job._id%>" class="btn btn-danger" style="display: block; float: right">Edit Tuition</a>
+      <div class="col-sm-6">
+        <table class="table col-sm-6">
+        <tbody>
+          <tr><td>Creator</td><td><%=job.creator.username%> <a href="/admin/students/details/<%=job.creator._id%>" class="btn btn-info">View Profile</a></td></tr>
+          <tr><td>Institution</td><td><%=job.institution%></td></tr>
+          <tr><td>Medium</td><td><%=job.info.medium%></td></tr>
+          <tr><td>Level</td><td><%=job.info.level%></td></tr>
+          <tr><td>Thana</td><td><%=job.thana%></td></tr>
+          <tr><td>Zone</td><td><%=job.zone%></td></tr>
+          <tr><td>Subjects</td><td>
+            <%for(var i = 0; i < job.subjects.length; i++ ){ %>
+              <span> <%=job.subjects[i]%>, </span>
+            <%}%>
+          </td></tr>
+          <tr>
+            <td>Days</td>
+            <td>
+              <%for(var i = 0; i<job.days.length; i++ ){ %>
+                <span><%=job.days[i]%>, </span>
+              <%}%>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <%if(job.applicants && job.applicants.length > 0) { %>
+        <h3>Applicants</h3>
+        <%for(var i =0; i< job.applicants.length; i++ ) { %>
+            <div class="panel">
+              <div class="panel-body">
+              <span><b>Username</b> <%=job.applicants[i].applicant.username%></span>
+              <span><b>Salary</b> <%=job.applicants[i].salary%></span>
+              <a href="/admin/teachers/details/<%=job.applicants[i].applicant._id%>" class="btn btn-info">View Profile</a>
+            </div>
+            </div>
+        <%}%>
+      <%}%>
+        <%if(job.selected && job.selected.length> 0){ %>
+          <h3>Selected</h3>
+          <%for(var i =0; i< job.selected.length; i++ ) { %>
+              <div class="panel">
+                <div class="panel-body">
+                <span><b>Username</b> <%=job.selected[i].applicant.username%></span>
+                <span><b>Salary</b> <%=job.selected[i].salary%></span>
+                <a href="/admin/teachers/details/<%=job.selected[i].applicant._id%>" class="btn btn-info">View Profile</a>
+              </div>
+              </div>
+          <%}%>
+        <%}%>
+
+
+
+    <%}%>
+  </div>
+
+
+    <% include partials/templates/sb_jsdefaults %>
+</body>
+
+</html>

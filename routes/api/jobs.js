@@ -8,13 +8,13 @@ var async = require('async');
 
 
 router.get('/', function (req, res, next) {
-    jobService.getJobs(function (err, jobs) {
-        if (err) {
-            console.log('An Error occured during getting jobList');
-            res.json({ success: false, message: "An Error occured during getting jobList" });
-        }
-        res.json(jobs);
-    })
+    // jobService.getJobs(function (err, jobs) {
+    //     if (err) {
+    //         console.log('An Error occured during getting jobList');
+    //         res.json({ success: false, message: "An Error occured during getting jobList" });
+    //     }
+    //     res.json(jobs);
+    // })
 });
 
 router.post('/', function (req, res, next) {
@@ -64,7 +64,7 @@ router.post('/', function (req, res, next) {
 router.get('/private/:offset', function (req, res, next) {
     var offset = req.params.offset;
     userService.getUserId(req.decoded.username, function (err, user) {
-        jobService.getJobsPaginate({ creator: user._id }, Number(offset), function (err, jobs) {
+        jobService.getPrivateJobs({ creator: user._id }, function (err, jobs) {
             if (err) {
                 console.log('An Error occured during getting jobList');
                 res.json({ success: false, message: "An Error occured during getting jobList" });
