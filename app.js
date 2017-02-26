@@ -38,7 +38,7 @@ app.use(cookieParser());
 //Mongoose Inititalization
 mongoose.Promise = global.Promise;
 mongoose.connect(config.mongoUri);
-mongoose.set('debug', true);
+// mongoose.set('debug', true);
 
 app.use('/users', users);
 app.use('/api', api);
